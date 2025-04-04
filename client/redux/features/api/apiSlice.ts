@@ -11,7 +11,7 @@ export const apiSlice = createApi({
       query: (data) => ({
         url: "refresh",
         method: "GET",
-        credentials: "include" as const,
+        credentials: 'include'
       }),
     }),
 
