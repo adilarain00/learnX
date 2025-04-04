@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(
   Cors({
     origin: [
-      "http://localhost:3000",
+      "https://learn-x-elearning.vercel.app",
     ],
     credentials: true,
   })
