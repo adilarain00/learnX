@@ -5,38 +5,46 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_SERVER_URI,
+    credentials: "include", // Ensure cookies are included
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("access_token"); // Get token from localStorage
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   endpoints: (builder) => ({
-    refershToken: builder.query({
-      query: (data) => ({
+    refreshAccessToken: builder.query({
+      query: () => ({
         url: "refresh",
         method: "GET",
-        credentials: 'include'
+        credentials: "include",
       }),
     }),
 
     loadUser: builder.query({
-      query: (data) => ({
+      query: () => ({
         url: "me",
         method: "GET",
-        credentials: "include" as const,
+        credentials: "include",
       }),
-      
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
-          const result = await queryFulfilled;
+          const { data } = await queryFulfilled;
           dispatch(
             userLoggedIn({
-              accessToken: result.data.accessToken,
-              user: result.data.user,
+              accessToken: data.accessToken,
+              user: data.user,
             })
           );
+          localStorage.setItem("access_token", data.accessToken); // Store token
         } catch (error) {
-          console.log(error);
+          console.log("Error loading user:", error);
         }
       },
     }),
   }),
 });
 
-export const { useRefershTokenQuery, useLoadUserQuery } = apiSlice;
+export const { useRefreshAccessTokenQuery, useLoadUserQuery } = apiSlice;

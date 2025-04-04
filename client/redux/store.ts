@@ -13,10 +13,10 @@ export const store = configureStore({
     getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
-// call the refresh token function on every page loads
+// Call the refresh token function on every page load
 const initializeApp = async () => {
   await store.dispatch(
-    apiSlice.endpoints.refershToken.initiate({}, { forceRefetch: true })
+    apiSlice.endpoints.refreshAccessToken.initiate({}, { forceRefetch: true }) // Updated function name
   );
   await store.dispatch(
     apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true })
@@ -24,3 +24,4 @@ const initializeApp = async () => {
 };
 
 initializeApp();
+
