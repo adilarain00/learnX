@@ -7,7 +7,7 @@ export const apiSlice = createApi({
     baseUrl: process.env.NEXT_PUBLIC_SERVER_URI,
     credentials: "include", // Ensure cookies are included
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem("access_token"); // Get token from localStorage
+      const token = localStorage.getItem("access_token"); 
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }

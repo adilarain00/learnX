@@ -21,8 +21,8 @@ app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.ORIGIN,
-    credentials: true,
+    origin: process.env.ORIGIN, // Ensure this is correctly set
+    credentials: true, // Allow sending cookies
   })
 );
 
