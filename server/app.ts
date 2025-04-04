@@ -12,7 +12,7 @@ import userRouter from "./routes/user.route";
 
 import cookieParser from "cookie-parser";
 import express from "express";
-import cors from "cors";
+import Cors from "cors";
 import path from "path";
 export const app = express();
 
@@ -20,20 +20,13 @@ export const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 app.use(
-  cors({
-    origin: process.env.ORIGIN, // Ensure this is correctly set
-    credentials: true, // Allow sending cookies
+  Cors({
+    origin: [
+      "http://localhost:3000",
+    ],
+    credentials: true,
   })
 );
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://learn-x-elearning.vercel.app'); 
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
-
 // ✅ API rate limiting (before routes)
 const limiter = rateLimit({
   windowMs: 5 * 60 * 1000, // ⏳ 5 minutes instead of 15
@@ -63,10 +56,6 @@ app.get("/test", (req: Request, res: Response) => {
     success: true,
     message: "API is working",
   });
-});
-
-app.get("/", (req, res) => {
-  res.send("Backend is running...");
 });
 
 // ✅ Handle undefined routes
