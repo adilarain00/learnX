@@ -30,6 +30,7 @@ interface HeaderProps {
   route: string;
   setRoute: (route: string) => void;
 }
+
 const Header: FC<HeaderProps> = ({
   activeItem,
   setOpen,
@@ -75,6 +76,12 @@ const Header: FC<HeaderProps> = ({
     }
   }, [data, userData, socialAuth, refetch]);
 
+  useEffect(() => {
+    if (data && userData) {
+      refetch(); // Ensure user data is up-to-date
+    }
+  }, [data, userData, refetch]);
+
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 85) {
@@ -87,11 +94,10 @@ const Header: FC<HeaderProps> = ({
 
   const handleClose = (e: any) => {
     if (e.target.id === "screen") {
-      {
-        setOpenSidebar(false);
-      }
+      setOpenSidebar(false);
     }
   };
+
   return (
     <>
       {isLoading ? (
@@ -130,7 +136,7 @@ const Header: FC<HeaderProps> = ({
                       onClick={() => setOpenSidebar(true)}
                     />
                   </div>
-                  {userData ? (
+                  {userData?.user ? (
                     <Link href={"/profile"}>
                       <Image
                         src={
@@ -138,7 +144,7 @@ const Header: FC<HeaderProps> = ({
                             ? userData.user.avatar.url
                             : avatar
                         }
-                        alt=""
+                        alt="Profile Image"
                         width={30}
                         height={30}
                         className="w-[30px] h-[30px] rounded-full cursor-pointer"
@@ -176,7 +182,7 @@ const Header: FC<HeaderProps> = ({
                             ? userData.user.avatar.url
                             : avatar
                         }
-                        alt=""
+                        alt="Profile Image"
                         width={30}
                         height={30}
                         className="w-[30px] h-[30px] rounded-full cursor-pointer"
@@ -203,46 +209,34 @@ const Header: FC<HeaderProps> = ({
             )}
           </div>
           {route === "Login" && (
-            <>
-              {open && (
-                <CustomModal
-                  open={open}
-                  setOpen={setOpen}
-                  setRoute={setRoute}
-                  activeItem={activeItem}
-                  component={Login}
-                  refetch={refetch}
-                />
-              )}
-            </>
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Login}
+              refetch={refetch}
+            />
           )}
 
           {route === "Sign-Up" && (
-            <>
-              {open && (
-                <CustomModal
-                  open={open}
-                  setOpen={setOpen}
-                  setRoute={setRoute}
-                  activeItem={activeItem}
-                  component={SignUp}
-                />
-              )}
-            </>
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={SignUp}
+            />
           )}
 
           {route === "Verification" && (
-            <>
-              {open && (
-                <CustomModal
-                  open={open}
-                  setOpen={setOpen}
-                  setRoute={setRoute}
-                  activeItem={activeItem}
-                  component={Verification}
-                />
-              )}
-            </>
+            <CustomModal
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Verification}
+            />
           )}
         </div>
       )}
