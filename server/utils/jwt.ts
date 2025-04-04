@@ -24,15 +24,18 @@ export const accessTokenOptions: ITokenOptions = {
   expires: new Date(Date.now() + accessTokenExpire * 60 * 60 * 1000),
   maxAge: accessTokenExpire * 60 * 60 * 1000,
   httpOnly: true,
-  sameSite: "lax",
+  sameSite: "none",
+  secure: process.env.NODE_ENV === "production", // Ensures secure cookie in production
 };
 
 export const refreshTokenOptions: ITokenOptions = {
   expires: new Date(Date.now() + RefreshTokenExpire * 24 * 60 * 60 * 1000),
   maxAge: RefreshTokenExpire * 24 * 60 * 60 * 1000,
   httpOnly: true,
-  sameSite: "lax",
+  sameSite: "none",
+  secure: process.env.NODE_ENV === "production",
 };
+
 export const sendToken = (user: Iuser, statusCode: number, res: Response) => {
   const accessToken = user.SignAccessToken();
   const refreshToken = user.SignRefreshToken();
