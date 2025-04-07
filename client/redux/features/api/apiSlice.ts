@@ -8,7 +8,7 @@ export const apiSlice = createApi({
   }),
   endpoints: (builder) => ({
     refershToken: builder.query({
-      query: (data) => ({
+      query: () => ({
         url: "refresh",
         method: "GET",
         credentials: "include" as const,

@@ -12,21 +12,18 @@ import userRouter from "./routes/user.route";
 
 import cookieParser from "cookie-parser";
 import express from "express";
-import Cors from "cors";
+import cors from "cors";
 import path from "path";
 export const app = express();
 
 // Middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
-app.use(
-  Cors({
-    origin: [
-      "https://learn-x-lovat.vercel.app",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: "https://learn-x-lovat.vercel.app",
+  credentials: true
+}));
+
 // ✅ API rate limiting (before routes)
 const limiter = rateLimit({
   windowMs: 5 * 60 * 1000, // ⏳ 5 minutes instead of 15
