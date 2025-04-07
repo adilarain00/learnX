@@ -58,6 +58,14 @@ app.get("/test", (req: Request, res: Response) => {
   });
 });
 
+//  ✅ Test Route
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message: "API is working",
+  });
+});
+
 // ✅ Handle undefined routes
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
   const err = new Error(`Route ${req.originalUrl} not found`) as any;
