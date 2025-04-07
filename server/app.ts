@@ -20,7 +20,7 @@ export const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 app.use(cors({
-  origin: "https://learn-x-lovat.vercel.app",
+  origin: "https://learn-x-lovat.vercel.app/",
   credentials: true
 }));
 
