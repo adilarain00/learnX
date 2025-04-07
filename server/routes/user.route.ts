@@ -27,6 +27,7 @@ userRouter.get("/me", isAuthenticated, getuserInfo);
 userRouter.put("/update-user-info", isAuthenticated, updateUserInfo);
 userRouter.put("/update-user-password", isAuthenticated, updatePassword);
 userRouter.put("/update-user-avatar", isAuthenticated, updateProfilePicture);
+userRouter.get("/refresh", updateAccessToken);
 userRouter.get(
   "/get-Users",
   isAuthenticated,
