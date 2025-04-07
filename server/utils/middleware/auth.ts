@@ -10,37 +10,42 @@ export const isAuthenticated = CatchAsyncError(
     const access_token = req.cookies.access_token as string;
 
     if (!access_token) {
-      return next(
-        new ErrorHandler("Please login to access this resource", 400)
-      );
+      return next(new ErrorHandler("Please login to access this resource", 401));
     }
 
-    const decoded = jwt.decode(access_token) as JwtPayload;
+    let decoded: JwtPayload;
 
-    if (!decoded) {
-      return next(new ErrorHandler("access token is not valid", 400));
-    }
-
-    // check if the access token is expired
-    if (decoded.exp && decoded.exp <= Date.now() / 1000) {
-      try {
-        await updateAccessToken(req, res, next);
-      } catch (error) {
-        return next(error);
+    try {
+      // ✅ Use verify, not decode, to ensure token is valid and signed
+      decoded = jwt.verify(access_token, process.env.ACCESS_TOKEN!) as JwtPayload;
+    } catch (err: any) {
+      // ✅ If token is expired, try to refresh
+      if (err.name === "TokenExpiredError") {
+        try {
+          console.log("Access token expired, attempting to refresh...");
+          await updateAccessToken(req, res, next);
+          return; // ✅ Don't proceed to next middleware — it's handled in updateAccessToken
+        } catch (refreshError) {
+          return next(refreshError);
+        }
+      } else {
+        return next(new ErrorHandler("Invalid access token", 401));
       }
-    } else {
-      const user = await redis.get(decoded.id);
-
-      if (!user) {
-        return next(
-          new ErrorHandler("Please login to access this resource", 400)
-        );
-      }
-
-      req.user = JSON.parse(user);
-
-      next();
     }
+
+    // ✅ Ensure we have a decoded token with a valid ID
+    if (!decoded || !decoded.id) {
+      return next(new ErrorHandler("Invalid access token payload", 401));
+    }
+
+    // ✅ Fetch user session from Redis
+    const user = await redis.get(decoded.id);
+    if (!user) {
+      return next(new ErrorHandler("User session expired. Please login again.", 401));
+    }
+
+    req.user = JSON.parse(user);
+    next();
   }
 );
 
